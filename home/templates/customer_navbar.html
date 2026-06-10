@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'index' %}">MA Picks</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="{% url 'cars' %}">Cars</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="{% url 'service' %}">Services</a></li>
+            </ul>
+            
+            <!-- Search Form in Navbar -->
+            {% if request.user.is_authenticated %}
+            <form method="GET" action="{% url 'search_results' %}" class="d-flex align-items-center ms-auto me-3" role="search" style="gap: 8px;">
+                <input class="form-control" type="text" name="city" placeholder="Search by city..." aria-label="Search" style="border-radius: 20px; border: 2px solid #667eea; padding: 8px 15px; font-size: 13px; width: 180px; transition: all 0.3s ease;" onmouseover="this.style.borderColor='#764ba2'" onmouseout="this.style.borderColor='#667eea'">
+                <button class="btn" type="submit" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 50%; width: 38px; height: 38px; padding: 0; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+            {% endif %}
+        </div>
+        <div class="ms-auto d-flex align-items-center" style="margin-left: 20px;">
+            {% if request.user.is_authenticated %}
+                <div class="account-menu" style="position: relative;">
+                    <button class="account-toggle btn btn-link text-dark text-decoration-none" onclick="toggleAccountDropdown(event)">
+                        {% if request.user.profile.profile_picture %}
+                            <img src="{{ request.user.profile.profile_picture.url }}" alt="Profile" class="account-avatar" style="width: 32px; height: 32px; border-radius: 50%;">
+                        {% else %}
+                            <div class="account-avatar d-inline-flex justify-content-center align-items-center bg-primary text-white" style="width: 32px; height: 32px; border-radius: 50%;">
+                                {{ request.user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <span class="ms-1"><i class="fas fa-chevron-down" style="font-size: 10px;"></i></span>
+                    </button>
+                    
+                    <div class="account-dropdown border shadow-sm" id="accountDropdown" style="display: none; position: absolute; right: 0; background: white; z-index: 1000; min-width: 250px; padding: 15px; border-radius: 8px; top: 45px;">
+                        <p class="mb-1"><strong>{{ request.user.get_full_name|default:request.user.username }}</strong></p>
+                        <p class="small text-muted mb-2">{{ request.user.email }}</p>
+                        <hr>
+                        
+                        <div class="small mb-3">
+                            <div><strong>Phone:</strong> {{ request.user.profile.phone|default:"N/A" }}</div>
+                            <div><strong>City:</strong> {{ request.user.profile.city|default:"N/A" }}</div>
+                        </div>
+                        
+                        <a href="{% url 'past_orders' %}" class="d-block mb-2 text-decoration-none text-dark">My Bookings</a>
+                        <a href="{% url 'signout' %}" class="d-block text-danger text-decoration-none">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="auth-buttons">
+                    <a href="{% url 'customer_login' %}" class="btn btn-sm btn-outline-primary me-2">Login</a>
+                    <a href="{% url 'customer_signup' %}" class="btn btn-sm btn-success">Book Now</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleAccountDropdown(event) {
+        event.preventDefault();
+        const dropdown = document.getElementById('accountDropdown');
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const accountMenu = document.querySelector('.account-menu');
+        const dropdown = document.getElementById('accountDropdown');
+        if (accountMenu && !accountMenu.contains(event.target)) {
+            dropdown.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}
+
+{% block body %}
+    {% block child_body %} {% endblock %}
+{% endblock %}

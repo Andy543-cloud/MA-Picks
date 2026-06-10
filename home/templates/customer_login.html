@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% block title %} Sign In - MA Picks {% endblock %}
+{% block css %}
+<style>
+    @keyframes liquidFlow {
+        0% {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.2);
+            transform: translateY(0px);
+        }
+        50% {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 0 20px rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        100% {
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 0 10px rgba(255,255,255,0.2);
+            transform: translateY(0px);
+        }
+    }
+    
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: url('/media/cars/Car02.jpg') center/cover no-repeat fixed;
+        position: relative;
+        overflow: hidden;
+    }
+    .login-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.2);
+        z-index: 0;
+    }
+    .login-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(ellipse at center, rgba(255,255,255,0) 0%, rgba(0,0,0,0.1) 100%);
+        z-index: 0;
+        pointer-events: none;
+    }
+    .login-card {
+        width: 100%;
+        max-width: 400px;
+        padding: 40px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(25px) saturate(180%) brightness(1.1);
+        border-radius: 25px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 0 15px rgba(255,255,255,0.25), inset 0 0 30px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255,255,255,0.6);
+        position: relative;
+        z-index: 1;
+        animation: liquidFlow 4s ease-in-out infinite;
+        transition: all 0.3s ease;
+    }
+    .login-card:hover {
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.3), inset 0 0 25px rgba(255,255,255,0.3), inset 0 0 40px rgba(0,0,0,0.15);
+    }
+    .login-card h2 {
+        text-align: center;
+        color: rgba(30, 30, 30, 0.95);
+        margin-bottom: 30px;
+        font-weight: bold;
+        font-size: 28px;
+        text-shadow: 0 2px 6px rgba(255,255,255,0.4);
+        letter-spacing: 0.5px;
+    }
+    .login-card .form-group label {
+        display: block;
+        color: rgba(40, 40, 40, 0.9);
+        font-weight: 600;
+        margin-bottom: 8px;
+        text-shadow: 0 1px 3px rgba(255,255,255,0.3);
+        font-size: 13px;
+        letter-spacing: 0.3px;
+    }
+    .login-card .form-group input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid rgba(255,255,255,0.4);
+        border-radius: 8px;
+        font-size: 14px;
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(30, 30, 30, 0.95);
+        box-sizing: border-box;
+        backdrop-filter: blur(15px);
+        transition: all 0.3s ease;
+    }
+    .login-card .form-group input::placeholder {
+        color: rgba(100, 100, 100, 0.6);
+    }
+    .login-card .form-group input:focus {
+        outline: none;
+        border-color: rgba(230, 30, 42, 0.9);
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(230, 30, 42, 0.4), inset 0 0 10px rgba(230, 30, 42, 0.1);
+    }
+    .login-card .btn-login {
+        width: 100%;
+        padding: 12px;
+        background-color: rgba(230, 30, 42, 0.8);
+        color: white;
+        border: 1px solid rgba(230, 30, 42, 0.5);
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        letter-spacing: 0.5px;
+    }
+    .login-card .btn-login:hover {
+        background-color: rgba(230, 30, 42, 0.95);
+        box-shadow: 0 0 20px rgba(230, 30, 42, 0.6), inset 0 0 10px rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+    }
+    .login-card .login-footer {
+        text-align: center;
+        margin-top: 20px;
+        color: rgba(80, 80, 80, 0.9);
+        font-size: 13px;
+        text-shadow: 0 1px 2px rgba(255,255,255,0.3);
+        letter-spacing: 0.3px;
+    }
+    .login-card .login-footer a {
+        color: rgba(230, 30, 42, 0.95);
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.2s ease;
+    }
+    .login-card .login-footer a:hover {
+        text-decoration: underline;
+        text-shadow: 0 0 8px rgba(230, 30, 42, 0.4);
+    }
+    .login-card h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-weight: bold;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 8px;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: #e61e2a;
+        box-shadow: 0 0 5px rgba(230, 30, 42, 0.3);
+    }
+    .btn-login {
+        width: 100%;
+        padding: 12px;
+        background-color: #e61e2a;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    .btn-login:hover {
+        background-color: #c41823;
+    }
+    .login-footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+        font-size: 14px;
+    }
+    .login-footer a {
+        color: #e61e2a;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}
+{% block body %}
+
+<div class="login-container">
+    <div class="login-card">
+        <h2>Sign In</h2>
+        <form method="POST" action="{% url 'customer_login' %}">
+            {% csrf_token %}
+            {% if messages %}
+            <div style="margin-bottom: 15px;">
+                {% for message in messages %}
+                <div style="padding: 10px; background: {% if message.tags == 'error' %}#ffcccc{% else %}#ccffcc{% endif %}; border-radius: 5px; color: #333; font-size: 13px; margin-bottom: 5px;">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <label for="username">Username or Email</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username or email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+        <div class="login-footer">
+            Don't have an account? <a href="/customer_signup/">Sign up here</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'customer_navbar.html' %}
+{% block title %} My Orders - MA Picks {% endblock %}
+{% block css %}
+<style>
+    h1 {
+        text-align: center;
+        color: black;
+        margin-bottom: 30px;
+    }
+    .no-orders {
+        text-align: center;
+        padding: 40px;
+        color: #666;
+    }
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 14px;
+    }
+    th {
+        background-color: #dc3545;
+        color: white;
+        padding: 15px;
+        text-align: left;
+    }
+    td {
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+    .status-paid {
+        color: green;
+        font-weight: bold;
+    }
+    .status-pending {
+        color: orange;
+        font-weight: bold;
+    }
+    .btn-small {
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+</style>
+{% endblock %}
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h1>My Orders</h1>
+    
+    {% if all_orders %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Car Name</th>
+                    <th>Pickup Date</th>
+                    <th>Return Date</th>
+                    <th>Duration</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in all_orders %}
+                <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.car.brand }} {{ order.car.name }}</td>
+                    <td>{{ order.pickup_date|date:"M d, Y" }}</td>
+                    <td>{{ order.return_date|date:"M d, Y" }}</td>
+                    <td>{{ order.total_days }} days</td>
+                    <td><strong>GHC {{ order.total_rent }}</strong></td>
+                    <td>
+                        {% if order.payment_status == 'Paid' %}
+                            <span class="status-paid">✓ Paid</span>
+                        {% elif order.payment_status == 'Pending' %}
+                            <span class="status-pending">⏳ Pending</span>
+                        {% else %}
+                            <span>{{ order.payment_status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'order_details' order.id %}" class="btn btn-primary btn-small">
+                            <i class="fas fa-eye me-1"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info no-orders">
+        <i class="fas fa-inbox fa-2x mb-3"></i>
+        <p>No orders yet. <a href="{% url 'cars' %}">Browse cars</a> to make your first booking!</p>
+    </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{% url 'customer_homepage' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+
+{% endblock %}

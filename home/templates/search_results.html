@@ -1,0 +1,356 @@
+{% extends 'customer_navbar.html' %}
+{% block title %}Search Results - MA Picks{% endblock %}
+
+{% block css %}
+<style>
+    .search-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 0;
+        margin-bottom: 40px;
+    }
+    
+    .search-form {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+    
+    .search-form .form-control,
+    .search-form .form-select {
+        border: 2px solid #e0e0e0;
+        padding: 12px 15px;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+    
+    .search-form .form-control:focus,
+    .search-form .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+    }
+    
+    .search-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .results-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f0f4ff;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+    
+    .results-count {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+    }
+    
+    .car-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+    
+    .car-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .car-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    
+    .car-image {
+        width: 100%;
+        height: 200px;
+        background: #f0f0f0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    
+    .car-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .car-body {
+        padding: 20px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .car-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .car-city {
+        font-size: 12px;
+        color: #999;
+        margin-bottom: 12px;
+    }
+    
+    .car-details {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+    
+    .car-details span {
+        display: block;
+        margin-bottom: 5px;
+    }
+    
+    .car-price {
+        font-size: 16px;
+        font-weight: 700;
+        color: #dc3545;
+        margin: 12px 0;
+    }
+    
+    .car-actions {
+        margin-top: auto;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    
+    .car-actions a {
+        display: block;
+        text-align: center;
+        padding: 10px;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .car-actions a:hover {
+        background: #5568d3;
+        text-decoration: none;
+    }
+    
+    .no-results {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+    
+    .no-results i {
+        font-size: 4rem;
+        color: #ddd;
+        margin-bottom: 20px;
+    }
+    
+    .no-results h3 {
+        font-size: 22px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+    
+    .badge-city {
+        display: inline-block;
+        background: #e8f0ff;
+        color: #667eea;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block child_body %}
+<div class="search-header">
+    <div class="container">
+        <h1 class="mb-2">
+            <i class="fas fa-search me-2"></i> Search Cars
+        </h1>
+        <p class="mb-0 opacity-75">Find your perfect car in your preferred city</p>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <!-- Search Form -->
+    <div class="search-form">
+        <form method="GET" action="{% url 'search_results' %}" class="needs-validation">
+            <div class="row g-3">
+                <!-- Search Query -->
+                <div class="col-md-12">
+                    <label class="search-label">
+                        <i class="fas fa-search me-2"></i> Search by Car Name or Brand
+                    </label>
+                    <input type="text" 
+                           name="q" 
+                           class="form-control" 
+                           placeholder="e.g., Toyota, BMW, Tesla..." 
+                           value="{{ search_query }}"
+                           autocomplete="off">
+                </div>
+                
+                <!-- City Filter -->
+                <div class="col-md-6">
+                    <label class="search-label">
+                        <i class="fas fa-map-marker-alt me-2"></i> City
+                    </label>
+                    <select name="city" class="form-select">
+                        <option value="">-- All Cities --</option>
+                        {% for city in all_cities %}
+                            <option value="{{ city }}" {% if city == search_city %}selected{% endif %}>
+                                {{ city }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Brand Filter -->
+                <div class="col-md-6">
+                    <label class="search-label">
+                        <i class="fas fa-tag me-2"></i> Brand
+                    </label>
+                    <select name="brand" class="form-select">
+                        <option value="">-- All Brands --</option>
+                        {% for brand in all_brands %}
+                            <option value="{{ brand }}" {% if brand == search_brand %}selected{% endif %}>
+                                {{ brand }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary me-2" style="border-radius: 8px;">
+                        <i class="fas fa-search me-2"></i> Search
+                    </button>
+                    {% if search_query or search_city or search_brand %}
+                        <a href="{% url 'search_results' %}" class="btn btn-outline-secondary" style="border-radius: 8px;">
+                            <i class="fas fa-times me-2"></i> Clear Filters
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Results Info -->
+    {% if search_query or search_city or search_brand %}
+    <div class="results-info">
+        <div>
+            <span class="results-count">
+                <i class="fas fa-filter me-2"></i> Found <strong>{{ results_count }}</strong> car{{ results_count|pluralize }}
+            </span>
+            {% if search_query %}
+                <span class="badge badge-primary ms-2">Search: "{{ search_query }}"</span>
+            {% endif %}
+            {% if search_city %}
+                <span class="badge badge-info ms-2">City: {{ search_city }}</span>
+            {% endif %}
+            {% if search_brand %}
+                <span class="badge badge-success ms-2">Brand: {{ search_brand }}</span>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+        <div class="results-info">
+            <div>
+                <span class="results-count">
+                    <i class="fas fa-heart me-2"></i> Showing <strong>{{ results_count }}</strong> available car{{ results_count|pluralize }}
+                </span>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Cars Grid -->
+    {% if cars %}
+        <div class="car-grid">
+            {% for car in cars %}
+            <div class="car-card">
+                <!-- Car Image -->
+                <div class="car-image">
+                    {% if car.image %}
+                        <img src="{{ car.image.url }}" alt="{{ car.name }}">
+                    {% else %}
+                        <div class="text-center text-muted w-100">
+                            <i class="fas fa-car fa-3x opacity-25"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Car Details -->
+                <div class="car-body">
+                    <h5 class="car-title">{{ car.brand }} {{ car.name }}</h5>
+                    
+                    <span class="badge-city">
+                        <i class="fas fa-map-marker-alt me-1"></i> {{ car.city }}
+                    </span>
+                    
+                    <div class="car-details">
+                        <span><i class="fas fa-cog me-2 text-muted"></i> {{ car.get_transmission_display }}</span>
+                        <span><i class="fas fa-gas-pump me-2 text-muted"></i> {{ car.fuel_type }}</span>
+                    </div>
+                    
+                    <div class="car-price">
+                        GHC {{ car.price_per_day }}<span style="font-size: 12px; color: #999;">/day</span>
+                    </div>
+                    
+                    <div class="car-actions">
+                        <a href="{% url 'car_rent' car.id %}">
+                            <i class="fas fa-check-circle me-1"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- No Results -->
+        <div class="no-results">
+            <i class="fas fa-search"></i>
+            <h3>No Cars Found</h3>
+            <p>
+                {% if search_query %}
+                    No cars match "{{ search_query }}"
+                {% elif search_city %}
+                    No cars available in {{ search_city }}
+                {% elif search_brand %}
+                    No {{ search_brand }} cars available
+                {% else %}
+                    No cars available at the moment
+                {% endif %}
+            </p>
+            <a href="{% url 'cars' %}" class="btn btn-primary mt-3">
+                <i class="fas fa-arrow-left me-2"></i> Back to All Cars
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

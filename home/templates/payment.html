@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %} Payment - MA Picks {% endblock %}
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'css/payment.css' %}">
+{% endblock %}
+{% block content %}
+
+
+
+<div class="payment-container">
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab-link active" onclick="openTab(event, 'CreditCard')">Credit Card</button>
+    <button class="tab-link" onclick="openTab(event, 'PayPal')">PayPal</button>
+  </div>
+
+  <!-- Credit Card Tab -->
+  <div id="CreditCard" class="tab-content" style="display: block;">
+    <h3>Credit Card Details</h3>
+    <form>
+      <input type="text" placeholder="Cardholder Name" required>
+      <input type="text" placeholder="Card Number (0000 0000 0000 0000)" required>
+      <div class="row">
+        <input type="text" placeholder="MM/YY" style="width: 45%;">
+        <input type="password" placeholder="CVV" style="width: 45%;">
+      </div>
+      <button type="submit" class="pay-btn">Pay Now</button>
+    </form>
+  </div>
+
+  <!-- PayPal Tab -->
+  <div id="PayPal" class="tab-content">
+    <h3>PayPal Payment</h3>
+    <p>You will be redirected to PayPal to complete your purchase.</p>
+    <button class="pay-btn">Proceed to PayPal</button>
+  </div>
+</div>
+
+
+
+
+{% endblock %}
+

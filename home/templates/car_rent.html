@@ -1,0 +1,122 @@
+{% extends 'customer_navbar.html' %}
+{% block title %} Confirm Rental {% endblock %}
+
+{% block child_body %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+                
+                <div class="row g-0">
+                    <div class="col-md-5 bg-light d-flex align-items-center justify-content-center p-4">
+                        {% if car.image %}
+                            <img src="{{ car.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ car.name }}" style="max-height: 250px; object-fit: contain;">
+                        {% else %}
+                            <div class="text-center text-muted">
+                                <i class="fas fa-car fa-5x mb-3 opacity-25"></i>
+                                <p>No Image Available</p>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="card-body p-4">
+                            <div class="mb-3">
+                                <span class="badge bg-danger mb-2">Step 2: Confirm Dates</span>
+                                <h2 class="card-title text-dark"><b>Confirm Your Rental</b></h2>
+                                <p class="text-muted small">Please verify the vehicle and select your duration.</p>
+                            </div>
+
+                            {% if messages %}
+                                <div class="alert alert-dismissible fade show" role="alert" id="messageAlert">
+                                    {% for message in messages %}
+                                        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show mb-2" role="alert">
+                                            {{ message }}
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <form method="POST" action="" id="rentalForm">
+                                {% csrf_token %}
+
+                                <div class="p-3 mb-4 rounded border-start border-4 border-danger" style="background-color: #f8f9fa;">
+                                    <h5 class="mb-1"><b>{{ car.brand }} {{ car.name }}</b></h5>
+                                    <p class="mb-0 text-muted small">Daily Rate: <span class="text-danger fw-bold">GHC {{ car.price_per_day }}</span></p>
+                                </div>
+
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold text-muted">PICKUP DATE</label>
+                                        <input type="date" name="pickup_date" id="pickup_date" class="form-control border-2" required>
+                                        <small class="text-danger" id="pickup-error" style="display: none;">Please select a pickup date</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold text-muted">RETURN DATE</label>
+                                        <input type="date" name="return_date" id="return_date" class="form-control border-2" required>
+                                        <small class="text-danger" id="return-error" style="display: none;">Please select a return date</small>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 p-3 rounded" style="background-color: #eef2ff;">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="text-muted">Estimated Duration:</span>
+                                        <span id="days-count" class="fw-bold text-dark">0 Days</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="text-muted">Total Amount:</span>
+                                        <h3 class="mb-0 text-danger"><b>GHC <span id="total-price">0.00</span></b></h3>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 d-grid gap-2">
+                                    <button type="submit" class="btn btn-danger btn" style="border-radius: 8px;">
+                                        <i class="fas fa-check-circle me-2"></i> Complete Booking
+                                    </button>
+                                    <a href="{% url 'cars' %}" class="btn btn-link text-muted text-decoration-none small text-center">
+                                        <i class="fas fa-arrow-left me-1"></i> Change Vehicle
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div> </div> </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const pickup = document.getElementById('pickup_date');
+    const dropoff = document.getElementById('return_date');
+    const daysDisplay = document.getElementById('days-count');
+    const priceDisplay = document.getElementById('total-price');
+    const rate = parseFloat("{{ car.price_per_day }}");
+
+    // Set minimum date to today
+    const today = new Date().toISOString().split('T')[0];
+    if (pickup) pickup.setAttribute('min', today);
+    if (dropoff) dropoff.setAttribute('min', today);
+
+    function updateSummary() {
+        if (pickup && dropoff && pickup.value && dropoff.value) {
+            const start = new Date(pickup.value);
+            const end = new Date(dropoff.value);
+            
+            const diffTime = end - start;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 0) {
+                daysDisplay.innerText = `${diffDays} Days`;
+                priceDisplay.innerText = (diffDays * rate).toFixed(2);
+            } else {
+                daysDisplay.innerText = "0 Days";
+                priceDisplay.innerText = "0.00";
+            }
+        }
+    }
+
+    if (pickup) pickup.addEventListener('change', updateSummary);
+    if (dropoff) dropoff.addEventListener('change', updateSummary);
+</script>
+{% endblock %}

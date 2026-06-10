@@ -1,0 +1,51 @@
+<style>
+  footer { background-color: #121212; color: #ffffff; padding-top: 3rem; padding-bottom: 2rem; }
+  footer h5 { letter-spacing: 1px; font-weight: 700; }
+  footer .text-danger { color: #e61e2a !important; }
+  footer a { color: #bbb; text-decoration: none; transition: all 0.3s ease; }
+  footer a:hover { color: #e61e2a !important; }
+  footer hr { border-top: 1px solid #333; opacity: 0.5; margin: 2rem 0; }
+  footer .fa-brands, footer .fab { transition: 0.3s; }
+  footer .fa-brands:hover, footer .fab:hover { color: #e61e2a; transform: translateY(-3px); }
+</style>
+
+<footer class="mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <h5 class="text-uppercase mb-4 text-danger">MA Picks</h5>
+                <p class="small">Premium car rental services in Accra. Fast, reliable, and always ready for your next journey.</p>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="text-uppercase mb-4">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/cars/">Our Fleet</a></li>
+                    <li><a href="#contact">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <h5 class="text-uppercase mb-4">Contact</h5>
+                <p class="small"><i class="fa-solid fa-location-dot me-2 text-danger"></i> 3rd Darku Lane, Accra, Ghana</p>
+                <p class="small"><i class="fa-solid fa-envelope me-2 text-danger"></i> nyarkoandrews01@gmail.com</p>
+                <p class="small"><i class="fa-solid fa-phone me-2 text-danger"></i> +233 204047827</p>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <p class="small mb-0">© 2026 MA Picks Car Rentals. All Rights Reserved.</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a href="#" class="me-3"><i class="fa-brands fa-facebook fa-lg"></i></a>
+                <a href="#" class="me-3"><i class="fa-brands fa-instagram fa-lg"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter fa-lg"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+  {% block css%} {% endblock %}
